@@ -6,8 +6,8 @@ export type TitleProps = {
 };
 
 export type ProductProps = {
-  _id: number;
-  image: string;
+  _id: string;
+  image: string[];
   name: string;
   price: number; 
 };

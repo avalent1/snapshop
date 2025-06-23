@@ -1,4 +1,4 @@
-import { products } from "../assets/assets";
+import { products } from "../../../backend-ex/models/Product";
 
 export type TitleProps = {
   text1: string;
@@ -6,8 +6,8 @@ export type TitleProps = {
 };
 
 export type ProductProps = {
-  _id: string;
-  image: string[];
+  _id: number;
+  image: string;
   name: string;
   price: number; 
 };
@@ -17,6 +17,3 @@ export interface ShopContextType {
     currency: string;
     delivery_fee: number;
 }
-
-
-//tretira ekstenziju kao string

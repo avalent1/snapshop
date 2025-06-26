@@ -10,12 +10,12 @@ import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-a
 
 const LatestCollection: React.FC = () => {
 
-  const [latestProducts, setLatestProducts] = useState<Product[]>([]);
-  
+const [latestProducts, setLatestProducts] = useState<Product[]>([]);
+
   useEffect(() => {
     const fetchProducts = async () => {
-      const productsData = await getAllProducts({page:0, size:0});
-      setLatestProducts(productsData.slice(0, 10)); 
+    const productsData = await getAllProducts({page:0, size:0});
+    setLatestProducts(productsData.slice(0, 10)); 
     };
 
     fetchProducts();

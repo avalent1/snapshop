@@ -13,7 +13,6 @@ export type ProductProps = {
 };
 
 export interface ShopContextType {
-    products: typeof products;
     currency: string;
     delivery_fee: number;
 }

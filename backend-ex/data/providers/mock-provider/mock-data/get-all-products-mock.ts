@@ -15,7 +15,7 @@ export const getAllProductsMock = {
         subCategory: "Topwear",
         sizes: ["S", "M", "L"],
         date: 1716634345448,
-        bestseller: true
+        bestseller: false
     },
     {
         _id: 2,
@@ -41,7 +41,7 @@ export const getAllProductsMock = {
         category: "Kids",
         subCategory: "Topwear",
         sizes: ["S", "L", "XL"],
-        bestseller: true
+        bestseller: false
     },
     {
         _id: 4,
@@ -107,7 +107,7 @@ export const getAllProductsMock = {
         category: "Kids",
         subCategory: "Topwear",
         sizes: ["M", "L", "XL"],
-        bestseller: false
+        bestseller: true
     },
     {
         _id: 10,
@@ -118,7 +118,7 @@ export const getAllProductsMock = {
         category: "Men",
         subCategory: "Bottomwear",
         sizes: ["S", "L", "XL"],
-        bestseller: false
+        bestseller:  false
     },
   ],
 } as Response<GetAllProductsResponse>;

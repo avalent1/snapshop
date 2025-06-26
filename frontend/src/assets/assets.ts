@@ -16,7 +16,6 @@ import p_img4 from './p_img4.png'
 import p_img5 from './p_img5.png'
 //https://res.cloudinary.com/dq9demmal/image/upload/v1750613297/p_img5_sutvog.png
 import p_img6 from './p_img6.png'
-
 import p_img7 from './p_img7.png'
 import p_img8 from './p_img8.png'
 import p_img9 from './p_img9.png'

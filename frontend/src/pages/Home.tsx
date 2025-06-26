@@ -4,6 +4,7 @@ import LatestCollection from '../components/LatestCollection'
 import { Product } from '../../../backend-ex/models/Product'
 import BestSeller from '../components/BestSeller'
 import OurPolicy from '../components/OurPolicy'
+import NewsletterBox from '../components/NewsletterBox'
 
 
 const Home: React.FC = () => {
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
       <LatestCollection />
       <BestSeller />
       <OurPolicy />
+      <NewsletterBox />
     </div>
   )
 }

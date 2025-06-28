@@ -1,22 +1,24 @@
-import { createContext, useEffect, useState } from "react";
-//import { products } from "../assets/assets";
+import { createContext, useState } from "react";
 import { ShopContextType } from "../types/types";
-import { Product } from "../../../backend-ex/models/Product";
-import { getAllProducts } from "../../../backend-ex/data/endpoints/product/get-all-products";
-import { getAllProductsMock } from "../../../backend-ex/data/providers/mock-provider/mock-data/get-all-products-mock";
 
 export const ShopContext = createContext<ShopContextType>({
     currency: '$',
     delivery_fee: 10,
+    search: '',
+    setSearch: () => {},
+    showSearch: true,
+    setShowSearch: () => {}
 });
 
 const ShopContextProvider = (props: React.PropsWithChildren)=> {
 
     const currency = '$';
     const delivery_fee = 10;
+    const [search, setSearch] = useState<string>('');
+    const [showSearch, setShowSearch] = useState<boolean>(false);
 
     const value = {
-        currency, delivery_fee
+        currency, delivery_fee, search, setSearch, showSearch, setShowSearch
     }
 
     return (

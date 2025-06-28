@@ -15,4 +15,8 @@ export type ProductProps = {
 export interface ShopContextType {
     currency: string;
     delivery_fee: number;
+    search: string;
+    setSearch: (value: string) => void;
+    showSearch: boolean;
+    setShowSearch: (value: boolean) => void;
 }

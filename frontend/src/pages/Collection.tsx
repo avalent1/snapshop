@@ -7,11 +7,23 @@ import ProductItem from '../components/ProductItem';
 
 const Collection: React.FC = () => {
 
-  const [products, setProducts] = useState<Product[]>([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [filterProducts, setFilterProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
   const [category, setCategory] = useState<string[]>([]);
   const [subCategory, setSubCategory] = useState<string[]>([]);
+  const [sortType, setSortType] = useState<string>('relevant');
+
+  useEffect(() => {
+      const fetchProducts = async () => {
+      const productsData = await getAllProducts({page:0, size:0});
+      setAllProducts(productsData);
+      setFilterProducts(productsData); 
+      };
+  
+      fetchProducts();
+    }, []);
 
   const toggleCategory = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (category.includes(e.target.value)) {
@@ -32,7 +44,7 @@ const Collection: React.FC = () => {
   }
 
   const applyFilter = () => {
-    let productsCopy = products.slice();
+    let productsCopy = allProducts.slice();
 
     if (category.length > 0) {
       productsCopy = productsCopy.filter(item => category.includes(item.category));
@@ -44,24 +56,33 @@ const Collection: React.FC = () => {
 
     setFilterProducts(productsCopy);
   }
-  
-  
-    useEffect(() => {
-      const fetchProducts = async () => {
-      const productsData = await getAllProducts({page:0, size:0});
-      setProducts(productsData); 
-      };
-  
-      fetchProducts();
-    }, []);
 
-    useEffect(() => {
-      setFilterProducts(products);
-    }, []);
+  // product sorted by price
+
+  const sortProduct = () => {
+    let filterProductsCopy = filterProducts.slice();
+
+    switch (sortType) {
+      case 'low-high':
+        setFilterProducts(filterProductsCopy.sort((a, b) => a.price - b.price));
+        break;
+      case 'high-low':
+        setFilterProducts(filterProductsCopy.sort((a, b) => b.price - a.price));
+        break;
+
+      default:
+        applyFilter();
+        break;
+    }
+  }
 
     useEffect(() => {
       applyFilter();
     }, [category, subCategory]);
+
+    useEffect(() => {
+      sortProduct();
+    }, [sortType]);
 
 
   return (
@@ -110,7 +131,7 @@ const Collection: React.FC = () => {
           <Title text1={'ALL'} text2={'COLLECTIONS'} />
 
           {/* Sorting options */}
-          <select className='border-2 border-gray-300 text-sm px-2'>
+          <select onChange={(e)=>setSortType(e.target.value)} className='border-2 border-gray-300 text-sm px-2'>
             <option value="relevant">Sort by: Relevant</option>
             <option value="low-high">Sort by: Low to High</option>
             <option value="high-low">Sort by: High to Low</option>

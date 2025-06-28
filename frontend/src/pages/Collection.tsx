@@ -1,12 +1,14 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { Product } from '../../../backend-ex/models/Product';
 import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
 import { assets } from '../assets/assets';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
+import { ShopContext } from '../context/ShopContext';
 
 const Collection: React.FC = () => {
 
+  const {search, showSearch} = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [filterProducts, setFilterProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -46,6 +48,10 @@ const Collection: React.FC = () => {
   const applyFilter = () => {
     let productsCopy = allProducts.slice();
 
+    if (showSearch && search){
+      productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
+    }
+
     if (category.length > 0) {
       productsCopy = productsCopy.filter(item => category.includes(item.category));
     }
@@ -78,7 +84,7 @@ const Collection: React.FC = () => {
 
     useEffect(() => {
       applyFilter();
-    }, [category, subCategory]);
+    }, [category, subCategory, search, showSearch]);
 
     useEffect(() => {
       sortProduct();

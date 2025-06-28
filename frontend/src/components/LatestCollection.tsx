@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Title from './Title';
 import ProductItem from './ProductItem';
-//import { ProductProps } from '../types/types';
-import type { Product } from '../../../backend-ex/models/Product'; // Adjust the import based on your project structure
+import type { Product } from '../../../backend-ex/models/Product'; 
 import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
-//import Products from '../pages/Product';
   
 
 const LatestCollection: React.FC = () => {

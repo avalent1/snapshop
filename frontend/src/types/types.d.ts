@@ -20,3 +20,8 @@ export interface ShopContextType {
     showSearch: boolean;
     setShowSearch: (value: boolean) => void;
 }
+
+export interface RelatedProductsProps {
+  category: string;
+  subCategory: string;
+}

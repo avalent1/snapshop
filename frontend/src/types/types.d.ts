@@ -19,9 +19,22 @@ export interface ShopContextType {
     setSearch: (value: string) => void;
     showSearch: boolean;
     setShowSearch: (value: boolean) => void;
+    cartItems: Record<number, CartItem>;
+    addToCart: (props: AddToCartProps) => Promise<void>;
+    getCartCount: () => number;
 }
 
 export interface RelatedProductsProps {
   category: string;
   subCategory: string;
 }
+
+
+export interface AddToCartProps {
+  itemId: number;
+  size: string;
+}
+
+export type CartItem = {
+        [size: string]: number;
+    };

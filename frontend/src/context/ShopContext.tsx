@@ -1,13 +1,18 @@
-import { createContext, useState } from "react";
-import { ShopContextType } from "../types/types";
+import { createContext, useEffect, useState } from "react";
+import { AddToCartProps, CartItem, ShopContextType } from "../types/types";
+import { Product } from "../../../backend-ex/models/Product";
+import { toast } from "react-toastify";
 
 export const ShopContext = createContext<ShopContextType>({
     currency: '$',
     delivery_fee: 10,
     search: '',
     setSearch: () => {},
-    showSearch: true,
-    setShowSearch: () => {}
+    showSearch: false,
+    setShowSearch: () => {},
+    cartItems: {},
+    addToCart: async () => {},
+    getCartCount: () => 0
 });
 
 const ShopContextProvider = (props: React.PropsWithChildren)=> {
@@ -16,9 +21,54 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
     const delivery_fee = 10;
     const [search, setSearch] = useState<string>('');
     const [showSearch, setShowSearch] = useState<boolean>(false);
+    
+
+    const [cartItems, setCartItems] = useState<Record<number, CartItem>>({});
+
+    const addToCart = async ({itemId, size}: AddToCartProps) => {
+
+        if (!size) {
+            toast.error('Please select a size before adding to cart.');
+            return;
+        }
+        
+        let cartData = structuredClone(cartItems);
+
+        if (cartData[itemId]) {
+            if (cartData[itemId][size]) {
+                cartData[itemId][size] += 1;
+            }
+            else {
+                cartData[itemId][size] = 1;
+            }
+        }
+        else {
+            cartData[itemId] = {};
+            cartData[itemId][size] = 1;
+        }
+        setCartItems(cartData);
+    }
+
+    const getCartCount = () => {
+        let totalCount = 0;
+        for (const items in cartItems){
+            for (const item in cartItems[items]){
+                try {
+                    if(cartItems[items][item] > 0) {
+                        totalCount += cartItems[items][item];
+                    }
+                } catch (error) {
+                    
+                }
+            }
+        }
+        return totalCount;
+    }
 
     const value = {
-        currency, delivery_fee, search, setSearch, showSearch, setShowSearch
+        currency, delivery_fee, 
+        search, setSearch, showSearch, setShowSearch,
+        cartItems, addToCart, getCartCount
     }
 
     return (

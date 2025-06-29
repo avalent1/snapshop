@@ -9,7 +9,7 @@ import RelatedProducts from '../components/RelatedProducts';
 const Product: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const numProductId = productId ? Number(productId) : undefined;
-  const {currency} = useContext(ShopContext);
+  const {currency, addToCart} = useContext(ShopContext);
   const [productData, setProductData] = useState<Product>();
   const [products, setProducts] = useState<Product[]>([]);
   const [size, setSize] = useState<string>('');
@@ -86,7 +86,7 @@ const Product: React.FC = () => {
             </div>
           </div>
 
-          <button className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
+          <button onClick={()=>addToCart({itemId:productData._id, size})} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
           <hr className='mt-8 sm:w-4/5'/>
           <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
               <p>100% Original product.</p>

@@ -22,6 +22,7 @@ export interface ShopContextType {
     cartItems: Record<number, CartItem>;
     addToCart: (props: AddToCartProps) => Promise<void>;
     getCartCount: () => number;
+    updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
 }
 
 export interface RelatedProductsProps {
@@ -35,6 +36,18 @@ export interface AddToCartProps {
   size: string;
 }
 
+export interface RemoveFromCartProps {
+  itemId: number;
+  size: string;
+  quantity:number;
+}
+
 export type CartItem = {
         [size: string]: number;
     };
+
+export interface CartDataProps {
+  itemId: number;
+  size: string;
+  [size: string]: number;
+}

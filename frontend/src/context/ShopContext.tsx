@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { AddToCartProps, CartItem, ShopContextType } from "../types/types";
+import { AddToCartProps, CartItem, RemoveFromCartProps, ShopContextType } from "../types/types";
 import { Product } from "../../../backend-ex/models/Product";
 import { toast } from "react-toastify";
 
@@ -12,7 +12,8 @@ export const ShopContext = createContext<ShopContextType>({
     setShowSearch: () => {},
     cartItems: {},
     addToCart: async () => {},
-    getCartCount: () => 0
+    getCartCount: () => 0,
+    updateQuantity: async () => {},
 });
 
 const ShopContextProvider = (props: React.PropsWithChildren)=> {
@@ -65,10 +66,18 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
         return totalCount;
     }
 
+    const updateQuantity = async ({itemId, size, quantity}:RemoveFromCartProps) => {
+        let cartData = structuredClone(cartItems);
+
+        cartData[itemId][size] = quantity;
+
+        setCartItems(cartData);
+    }
+
     const value = {
         currency, delivery_fee, 
         search, setSearch, showSearch, setShowSearch,
-        cartItems, addToCart, getCartCount
+        cartItems, addToCart, getCartCount, updateQuantity
     }
 
     return (

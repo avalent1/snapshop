@@ -3,6 +3,7 @@ import { AddToCartProps, CartItem, RemoveFromCartProps, ShopContextType } from "
 import { Product } from "../../../backend-ex/models/Product";
 import { toast } from "react-toastify";
 import { getAllProducts } from "../../../backend-ex/data/endpoints/product/get-all-products";
+import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext<ShopContextType>({
     currency: '$',
@@ -16,6 +17,7 @@ export const ShopContext = createContext<ShopContextType>({
     getCartCount: () => 0,
     updateQuantity: async () => {},
     getCartAmount: () => 0,
+    navigate: '',
 });
 
 const ShopContextProvider = (props: React.PropsWithChildren)=> {
@@ -26,6 +28,7 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [cartItems, setCartItems] = useState<Record<number, CartItem>>({});
     const [products, setProducts] = useState<Product[]>([]);
+    const navigate = useNavigate();
     
     useEffect(() => {
     const fetchProducts = async () => {
@@ -105,7 +108,7 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
         currency, delivery_fee, 
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount
+        getCartAmount, navigate
     }
 
     return (

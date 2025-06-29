@@ -24,6 +24,7 @@ export interface ShopContextType {
     getCartCount: () => number;
     updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
     getCartAmount: () => number;
+    navigate: NavigateFunction;
 }
 
 export interface RelatedProductsProps {

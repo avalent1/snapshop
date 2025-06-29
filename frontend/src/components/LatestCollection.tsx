@@ -1,17 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ShopContext } from '../context/ShowContext'
 import Title from './Title';
 import ProductItem from './ProductItem';
-import { ProductProps } from '../types/types';
-
-const LatestCollection = () => {
-
-  const { products } = useContext(ShopContext);
-  const [latestProducts, setLatestProducts] = useState([]);
+import type { Product } from '../../../backend-ex/models/Product'; 
+import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
   
-  useEffect(()=>{
-    setLatestProducts(products.slice(0,10))
-  },[])
+
+const LatestCollection: React.FC = () => {
+
+const [latestProducts, setLatestProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+    const productsData = await getAllProducts({page:0, size:0});
+    setLatestProducts(productsData.slice(0, 10)); 
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className='my-10'>
@@ -26,8 +31,8 @@ const LatestCollection = () => {
 
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
        {
-        latestProducts.map((item:ProductProps, index) => (
-          <ProductItem key={index} _id={item._id} image={item.image} name={item.name} price={item.price} />
+        latestProducts.map((item:Product, index) => (
+          <ProductItem key={index} product={item} />
         ))
        }
       </div>

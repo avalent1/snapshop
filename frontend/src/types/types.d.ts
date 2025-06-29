@@ -23,6 +23,7 @@ export interface ShopContextType {
     addToCart: (props: AddToCartProps) => Promise<void>;
     getCartCount: () => number;
     updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
+    getCartAmount: () => number;
 }
 
 export interface RelatedProductsProps {

@@ -4,6 +4,7 @@ import { Product } from '../../../backend-ex/models/Product';
 import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
+import CartTotal from '../components/CartTotal';
 
 const Cart: React.FC = () => {
 
@@ -68,6 +69,12 @@ const Cart: React.FC = () => {
             );
           })
         }
+      </div>
+
+      <div className='flex justify-end my-20'>
+        <div className='w-full sm:w.[450px]'>
+          <CartTotal />
+        </div>
       </div>
 
     </div>

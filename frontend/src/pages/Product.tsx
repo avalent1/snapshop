@@ -1,7 +1,7 @@
 import React, { use, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
-import type { Product } from '../../../backend-ex/models/Product'; 
+import { getAllProducts } from '../../data/endpoints/product/get-all-products';
+import type { Product } from '../../models/Product'; 
 import { assets } from '../assets/assets';
 import { ShopContext } from '../context/ShopContext';
 import RelatedProducts from '../components/RelatedProducts';

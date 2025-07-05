@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Title from './Title';
 import ProductItem from './ProductItem';
-import type { Product } from '../../../backend-ex/models/Product'; 
-import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
+import type { Product } from '../../models/Product'; 
+import { getAllProducts } from '../../data/endpoints/product/get-all-products';
   
 
 const LatestCollection: React.FC = () => {

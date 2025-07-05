@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Product from './Product';
-import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
+import { getAllProducts } from '../../data/endpoints/product/get-all-products';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 

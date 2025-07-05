@@ -1,4 +1,4 @@
-import { products } from "../../../backend-ex/models/Product";
+import { products } from "../../models/Product";
 
 export type TitleProps = {
   text1: string;

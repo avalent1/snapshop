@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { AddToCartProps, CartItem, RemoveFromCartProps, ShopContextType } from "../types/types";
-import { Product } from "../../../backend-ex/models/Product";
+import { Product } from "../../models/Product";
 import { toast } from "react-toastify";
-import { getAllProducts } from "../../../backend-ex/data/endpoints/product/get-all-products";
+import { getAllProducts } from "../../data/endpoints/product/get-all-products";
 import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext<ShopContextType>({

@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
-import { Product } from '../../../backend-ex/models/Product';
-import { getAllProducts } from '../../../backend-ex/data/endpoints/product/get-all-products';
+import { Product } from '../../models/Product';
+import { getAllProducts } from '../../data/endpoints/product/get-all-products';
 import { RelatedProductsProps } from '../types/types';
 import Title from './Title';
 import ProductItem from './ProductItem';

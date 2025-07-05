@@ -8,12 +8,14 @@ require("dotenv/config");
 const cloudinary_1 = __importDefault(require("./config/cloudinary"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const productRoute_1 = __importDefault(require("./routes/productRoute"));
+const cors_1 = __importDefault(require("cors"));
 // app config
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
 (0, cloudinary_1.default)();
 // middleware
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 //we can access the API from anywhere, any ip address
 // api endpoints
 app.use('/api/user', userRoute_1.default);

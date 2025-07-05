@@ -28,3 +28,7 @@ ProductImage.init(
   },
   { sequelize, tableName: 'product_images' }
 );
+
+export function associateProductImageModels() {
+  ProductImage.belongsTo(Product, { foreignKey: 'productId' });
+}

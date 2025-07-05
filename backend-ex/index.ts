@@ -4,7 +4,6 @@ import connectCloudinary from './config/cloudinary';
 import userRouter from './routes/userRoute';
 import productRouter from './routes/productRoute';
 import cors from 'cors';
-import sequelize from './config/database'; // Adjust the path to your actual sequelize instance
 
 // app config
 
@@ -26,12 +25,7 @@ app.get('/', (req, res) => {
     res.send("API working")
 });
 
-sequelize.sync({ alter: true }).then(() => {
-  console.log("✅ Database synced.");
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-  });
-}).catch((err) => {
-  console.error("❌ Failed to sync DB:", err);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

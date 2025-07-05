@@ -2,6 +2,9 @@
 
 import { Request, Response } from 'express';
 import { createProductWithAssets } from '../services/productService';
+import { Product } from '../models/productModel';
+import { ProductImage } from '../models/productImage';
+import { ProductSize } from '../models/productSize';
 
 const addProduct = async (req: Request, res: Response) => {
   try {
@@ -49,7 +52,19 @@ const addProduct = async (req: Request, res: Response) => {
 };
 
 const listProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.findAll({
+      include: [
+        { model: ProductImage, as: 'images' },
+        { model: ProductSize, as: 'sizes' },
+      ],
+    });
 
+    res.json(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ message: 'Server error fetching products.' });
+  }
 }
 
 const removeProduct = async (req: Request, res: Response) => {

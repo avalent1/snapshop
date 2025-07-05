@@ -11,6 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.singleProduct = exports.removeProduct = exports.listProducts = exports.addProduct = void 0;
 const productService_1 = require("../services/productService");
+const productModel_1 = require("../models/productModel");
+const productImage_1 = require("../models/productImage");
+const productSize_1 = require("../models/productSize");
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, description, price, category, subCategory, bestseller, sizes, } = req.body;
@@ -42,6 +45,19 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.addProduct = addProduct;
 const listProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield productModel_1.Product.findAll({
+            include: [
+                { model: productImage_1.ProductImage, as: 'images' },
+                { model: productSize_1.ProductSize, as: 'sizes' },
+            ],
+        });
+        res.json(products);
+    }
+    catch (err) {
+        console.error('Error fetching products:', err);
+        res.status(500).json({ message: 'Server error fetching products.' });
+    }
 });
 exports.listProducts = listProducts;
 const removeProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

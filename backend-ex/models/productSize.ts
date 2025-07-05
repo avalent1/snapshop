@@ -25,3 +25,7 @@ ProductSize.init(
   },
   { sequelize, tableName: 'product_sizes' }
 );
+
+export function associateProductSizeModels() {
+  ProductSize.belongsTo(Product, { foreignKey: 'productId' });
+}

@@ -42,3 +42,6 @@ Product.init(
     tableName: 'products',
     timestamps: true,}
 );
+
+Product.hasMany(ProductImage, { foreignKey: 'productId', as: 'images' });
+Product.hasMany(ProductSize, { foreignKey: 'productId', as: 'sizes' });

@@ -68,7 +68,26 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 };
 
 export const adminLogin = async (req: Request, res: Response): Promise<void> => {
-  res.status(501).json({ message: 'Not implemented yet' });
+  try {
+    const {email, password }: {email: string; password: string } = req.body;
+    console.log("Body: ", req.body)
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+      const secret = process.env.JWT_SECRET;
+
+      if (typeof secret !== 'string') {
+        res.status(500).json({ success: false, message: 'JWT_SECRET is not configured' });
+        return;
+      }
+
+      const token = jwt.sign({ email }, secret);
+      res.json({ success: true, token });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 export const fetchAllUsers = async (req: Request, res: Response): Promise<void> => {

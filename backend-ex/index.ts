@@ -15,11 +15,13 @@ connectCloudinary();
 
 app.use(express.json());
 app.use(cors())
+app.use(express.urlencoded({ extended: true }));
  //we can access the API from anywhere, any ip address
 
 // api endpoints
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
+
 
 app.get('/', (req, res) => {
     res.send("API working")

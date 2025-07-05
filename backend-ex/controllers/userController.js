@@ -74,7 +74,26 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.registerUser = registerUser;
 const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(501).json({ message: 'Not implemented yet' });
+    try {
+        const { email, password } = req.body;
+        console.log("Body: ", req.body);
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+            const secret = process.env.JWT_SECRET;
+            if (typeof secret !== 'string') {
+                res.status(500).json({ success: false, message: 'JWT_SECRET is not configured' });
+                return;
+            }
+            const token = jsonwebtoken_1.default.sign({ email }, secret);
+            res.json({ success: true, token });
+        }
+        else {
+            res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
 });
 exports.adminLogin = adminLogin;
 const fetchAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

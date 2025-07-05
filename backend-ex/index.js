@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 4000;
 // middleware
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.use(express_1.default.urlencoded({ extended: true }));
 //we can access the API from anywhere, any ip address
 // api endpoints
 app.use('/api/user', userRoute_1.default);

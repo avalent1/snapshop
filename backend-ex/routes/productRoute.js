@@ -14,6 +14,6 @@ const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, ne
 // Use upload.single('image') for image upload field
 productRouter.post('/add', upload.single('image'), asyncHandler(productController_1.addProduct));
 productRouter.post('/remove', asyncHandler(productController_1.removeProduct));
-productRouter.post('/single', productController_1.singleProduct);
+productRouter.post('/single', asyncHandler(productController_1.singleProduct));
 productRouter.get('/list', productController_1.listProducts);
 exports.default = productRouter;

@@ -15,6 +15,6 @@ const asyncHandler = (fn: any) => (req: express.Request, res: express.Response, 
 // Use upload.single('image') for image upload field
 productRouter.post('/add', upload.single('image'), asyncHandler(addProduct));
 productRouter.post('/remove', asyncHandler(removeProduct));
-productRouter.post('/single', singleProduct);
+productRouter.post('/single', asyncHandler(singleProduct));
 productRouter.get('/list', listProducts);
 export default productRouter;

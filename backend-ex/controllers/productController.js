@@ -76,5 +76,25 @@ const removeProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.removeProduct = removeProduct;
 const singleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const productId = Number(req.body.id); // or req.params.id if you want to pass id in URL
+        if (!productId || isNaN(productId)) {
+            return res.status(400).json({ message: 'Invalid product ID' });
+        }
+        const product = yield productModel_1.Product.findByPk(productId, {
+            include: [
+                { model: productImage_1.ProductImage, as: 'images' },
+                { model: productSize_1.ProductSize, as: 'sizes' },
+            ],
+        });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.json(product);
+    }
+    catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).json({ message: 'Server error fetching product' });
+    }
 });
 exports.singleProduct = singleProduct;

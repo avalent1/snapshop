@@ -56,3 +56,33 @@ export async function createProductWithAssets(
     return product;
   });
 }
+
+export async function deleteProductById(productId: number): Promise<void> {
+  await sequelize.transaction(async (tx) => {
+    // 1. Find product with associated images (for Cloudinary deletion)
+    const product = await Product.findByPk(productId, {
+      include: [{ model: ProductImage, as: 'images' }],
+      transaction: tx,
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // 2. Delete images from Cloudinary
+    if (product.images && product.images.length > 0) {
+      for (const img of product.images) {
+        if (img.publicId) {
+          await cloudinary.uploader.destroy(img.publicId);
+        }
+      }
+    }
+
+    // 3. Delete associated ProductImages and ProductSizes
+    await ProductImage.destroy({ where: { productId }, transaction: tx });
+    await ProductSize.destroy({ where: { productId }, transaction: tx });
+
+    // 4. Delete the product itself
+    await Product.destroy({ where: { id: productId }, transaction: tx });
+  });
+}

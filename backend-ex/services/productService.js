@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProductWithAssets = createProductWithAssets;
+exports.deleteProductById = deleteProductById;
 const cloudinary_1 = require("cloudinary");
 require("../config/cloudinary");
 const database_1 = __importDefault(require("../config/database"));
@@ -45,6 +46,33 @@ function createProductWithAssets(data, imageFile) {
                 yield productSize_1.ProductSize.bulkCreate(sizeRecords, { transaction: tx });
             }
             return product;
+        }));
+    });
+}
+function deleteProductById(productId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield database_1.default.transaction((tx) => __awaiter(this, void 0, void 0, function* () {
+            // 1. Find product with associated images (for Cloudinary deletion)
+            const product = yield productModel_1.Product.findByPk(productId, {
+                include: [{ model: productImage_1.ProductImage, as: 'images' }],
+                transaction: tx,
+            });
+            if (!product) {
+                throw new Error('Product not found');
+            }
+            // 2. Delete images from Cloudinary
+            if (product.images && product.images.length > 0) {
+                for (const img of product.images) {
+                    if (img.publicId) {
+                        yield cloudinary_1.v2.uploader.destroy(img.publicId);
+                    }
+                }
+            }
+            // 3. Delete associated ProductImages and ProductSizes
+            yield productImage_1.ProductImage.destroy({ where: { productId }, transaction: tx });
+            yield productSize_1.ProductSize.destroy({ where: { productId }, transaction: tx });
+            // 4. Delete the product itself
+            yield productModel_1.Product.destroy({ where: { id: productId }, transaction: tx });
         }));
     });
 }

@@ -1,7 +1,7 @@
 
 
 import { Request, Response } from 'express';
-import { createProductWithAssets } from '../services/productService';
+import { createProductWithAssets, deleteProductById } from '../services/productService';
 import { Product } from '../models/productModel';
 import { ProductImage } from '../models/productImage';
 import { ProductSize } from '../models/productSize';
@@ -68,7 +68,18 @@ const listProducts = async (req: Request, res: Response) => {
 }
 
 const removeProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = Number(req.body.id); // or req.params.id if you prefer
+    if (!productId || isNaN(productId)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
+    }
 
+    await deleteProductById(productId);
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || 'Server error' });
+  }
 }
 
 const singleProduct = async (req: Request, res: Response) => {

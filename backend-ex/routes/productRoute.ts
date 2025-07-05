@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { addProduct, listProducts, removeProduct, singleProduct } from '../controllers/productController';
+import { deleteProductById } from '../services/productService';
 
 const productRouter = express.Router();
 
@@ -13,7 +14,7 @@ const asyncHandler = (fn: any) => (req: express.Request, res: express.Response, 
 
 // Use upload.single('image') for image upload field
 productRouter.post('/add', upload.single('image'), asyncHandler(addProduct));
-productRouter.post('/remove', removeProduct);
+productRouter.post('/remove', asyncHandler(removeProduct));
 productRouter.post('/single', singleProduct);
 productRouter.get('/list', listProducts);
 export default productRouter;

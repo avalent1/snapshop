@@ -18,13 +18,10 @@ interface NewProductDTO {
 
 export async function createProductWithAssets(
   data: NewProductDTO,
-  imageFile: Express.Multer.File
+  imageFiles: Express.Multer.File[] // updated to accept multiple files
 ) {
   return await sequelize.transaction(async (tx: Transaction) => {
-    // 1. Upload to Cloudinary
-    const uploadRes = await cloudinary.uploader.upload(imageFile.path, { folder: 'products' });
-
-    // 2. Create Product
+    // 1. Create Product first
     const product = await Product.create(
       {
         name: data.name,
@@ -37,25 +34,35 @@ export async function createProductWithAssets(
       { transaction: tx }
     );
 
-    // 3. Create ProductImage
-    await ProductImage.create(
-      {
-        url: uploadRes.secure_url,
-        publicId: uploadRes.public_id,
-        productId: product.id,
-      },
-      { transaction: tx }
-    );
+    // 2. Upload images to Cloudinary and save in DB
+    for (const file of imageFiles) {
+      const uploadRes = await cloudinary.uploader.upload(file.path, {
+        folder: 'products',
+      });
 
-    // 4. Create Sizes (if any)
-    if (data.sizes && data.sizes.length) {
-      const sizeRecords = data.sizes.map((size) => ({ productId: product.id, size }));
+      await ProductImage.create(
+        {
+          url: uploadRes.secure_url,
+          publicId: uploadRes.public_id,
+          productId: product.id,
+        },
+        { transaction: tx }
+      );
+    }
+
+    // 3. Create Sizes (if any)
+    if (data.sizes && data.sizes.length > 0) {
+      const sizeRecords = data.sizes.map((size) => ({
+        productId: product.id,
+        size,
+      }));
       await ProductSize.bulkCreate(sizeRecords, { transaction: tx });
     }
 
     return product;
   });
 }
+
 
 export async function deleteProductById(productId: number): Promise<void> {
   await sequelize.transaction(async (tx) => {

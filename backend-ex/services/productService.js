@@ -20,12 +20,11 @@ const database_1 = __importDefault(require("../config/database"));
 const productModel_1 = require("../models/productModel");
 const productImage_1 = require("../models/productImage");
 const productSize_1 = require("../models/productSize");
-function createProductWithAssets(data, imageFile) {
+function createProductWithAssets(data, imageFiles // updated to accept multiple files
+) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield database_1.default.transaction((tx) => __awaiter(this, void 0, void 0, function* () {
-            // 1. Upload to Cloudinary
-            const uploadRes = yield cloudinary_1.v2.uploader.upload(imageFile.path, { folder: 'products' });
-            // 2. Create Product
+            // 1. Create Product first
             const product = yield productModel_1.Product.create({
                 name: data.name,
                 description: data.description,
@@ -34,15 +33,23 @@ function createProductWithAssets(data, imageFile) {
                 subCategory: data.subCategory,
                 bestseller: data.bestseller,
             }, { transaction: tx });
-            // 3. Create ProductImage
-            yield productImage_1.ProductImage.create({
-                url: uploadRes.secure_url,
-                publicId: uploadRes.public_id,
-                productId: product.id,
-            }, { transaction: tx });
-            // 4. Create Sizes (if any)
-            if (data.sizes && data.sizes.length) {
-                const sizeRecords = data.sizes.map((size) => ({ productId: product.id, size }));
+            // 2. Upload images to Cloudinary and save in DB
+            for (const file of imageFiles) {
+                const uploadRes = yield cloudinary_1.v2.uploader.upload(file.path, {
+                    folder: 'products',
+                });
+                yield productImage_1.ProductImage.create({
+                    url: uploadRes.secure_url,
+                    publicId: uploadRes.public_id,
+                    productId: product.id,
+                }, { transaction: tx });
+            }
+            // 3. Create Sizes (if any)
+            if (data.sizes && data.sizes.length > 0) {
+                const sizeRecords = data.sizes.map((size) => ({
+                    productId: product.id,
+                    size,
+                }));
                 yield productSize_1.ProductSize.bulkCreate(sizeRecords, { transaction: tx });
             }
             return product;

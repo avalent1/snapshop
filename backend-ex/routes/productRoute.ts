@@ -12,9 +12,13 @@ const upload = multer({ dest: 'uploads/' }); // temporary folder for image uploa
 const asyncHandler = (fn: any) => (req: express.Request, res: express.Response, next: express.NextFunction) =>
 	Promise.resolve(fn(req, res, next)).catch(next);
 
-// Use upload.single('image') for image upload field
-productRouter.post('/add', asyncHandler(adminAuth), upload.single('image'), asyncHandler(addProduct));
+productRouter.post('/add', asyncHandler(adminAuth), upload.fields([
+    { name: 'image1', maxCount: 1 },
+    { name: 'image2', maxCount: 1 },
+    { name: 'image3', maxCount: 1 }
+  ]), asyncHandler(addProduct));
 productRouter.post('/remove', asyncHandler(removeProduct));
 productRouter.post('/single', asyncHandler(singleProduct));
 productRouter.get('/list', listProducts);
 export default productRouter;
+

@@ -18,12 +18,15 @@ const addProduct = async (req: Request, res: Response) => {
       sizes,
     } = req.body;
 
-    const imageFile = req.file as Express.Multer.File;
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
 
-    if (!imageFile) {
+    if (!files?.image1?.[0]) {
       return res.status(400).json({ success: false, message: 'Image is required' });
     }
 
+    const uploadedImages = [files.image1?.[0], files.image2?.[0], files.image3?.[0]].filter(Boolean);
     // Ensure sizes is parsed as array (could be sent as JSON string)
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
 
@@ -37,7 +40,7 @@ const addProduct = async (req: Request, res: Response) => {
         bestseller: bestseller === 'true' || bestseller === true,
         sizes: parsedSizes,
       },
-      imageFile
+      uploadedImages
     );
 
     res.status(201).json({

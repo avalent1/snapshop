@@ -15,12 +15,14 @@ const productModel_1 = require("../models/productModel");
 const productImage_1 = require("../models/productImage");
 const productSize_1 = require("../models/productSize");
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
     try {
         const { name, description, price, category, subCategory, bestseller, sizes, } = req.body;
-        const imageFile = req.file;
-        if (!imageFile) {
+        const files = req.files;
+        if (!((_a = files === null || files === void 0 ? void 0 : files.image1) === null || _a === void 0 ? void 0 : _a[0])) {
             return res.status(400).json({ success: false, message: 'Image is required' });
         }
+        const uploadedImages = [(_b = files.image1) === null || _b === void 0 ? void 0 : _b[0], (_c = files.image2) === null || _c === void 0 ? void 0 : _c[0], (_d = files.image3) === null || _d === void 0 ? void 0 : _d[0]].filter(Boolean);
         // Ensure sizes is parsed as array (could be sent as JSON string)
         const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
         const result = yield (0, productService_1.createProductWithAssets)({
@@ -31,7 +33,7 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             subCategory,
             bestseller: bestseller === 'true' || bestseller === true,
             sizes: parsedSizes,
-        }, imageFile);
+        }, uploadedImages);
         res.status(201).json({
             success: true,
             productId: result.id,

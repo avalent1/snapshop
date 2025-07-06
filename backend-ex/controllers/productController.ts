@@ -30,6 +30,10 @@ const addProduct = async (req: Request, res: Response) => {
     // Ensure sizes is parsed as array (could be sent as JSON string)
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
 
+    if (!parsedSizes || !Array.isArray(parsedSizes) || parsedSizes.length === 0) {
+      return res.status(400).json({ success: false, message: 'At least one size is required.' });
+    }
+    
     const result = await createProductWithAssets(
       {
         name,

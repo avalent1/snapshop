@@ -25,6 +25,9 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const uploadedImages = [(_b = files.image1) === null || _b === void 0 ? void 0 : _b[0], (_c = files.image2) === null || _c === void 0 ? void 0 : _c[0], (_d = files.image3) === null || _d === void 0 ? void 0 : _d[0]].filter(Boolean);
         // Ensure sizes is parsed as array (could be sent as JSON string)
         const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
+        if (!parsedSizes || !Array.isArray(parsedSizes) || parsedSizes.length === 0) {
+            return res.status(400).json({ success: false, message: 'At least one size is required.' });
+        }
         const result = yield (0, productService_1.createProductWithAssets)({
             name,
             description,

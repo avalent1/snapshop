@@ -54,7 +54,7 @@ const listProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 { model: productSize_1.ProductSize, as: 'sizes' },
             ],
         });
-        res.json(products);
+        res.json({ success: true, products });
     }
     catch (err) {
         console.error('Error fetching products:', err);

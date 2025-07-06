@@ -63,7 +63,7 @@ const listProducts = async (req: Request, res: Response) => {
       ],
     });
 
-    res.json(products);
+    res.json({success: true, products});
   } catch (err) {
     console.error('Error fetching products:', err);
     res.status(500).json({ message: 'Server error fetching products.' });

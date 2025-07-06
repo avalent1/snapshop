@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { assets } from '../assets/assets'
 import axios from 'axios'
 import { backendUrl } from '../App';
+import { toast } from 'react-toastify';
 
 type AddProps = {
   token: string;
@@ -54,10 +55,28 @@ const Add: React.FC<AddProps> = ({ token }) => {
           token: token,
         },
       });
-      console.log(response.data);
+
+      if (response.data.success) {
+        toast.success(response.data.message)
+        setName('')
+        setDescription('')
+        setImage1(null)
+        setImage2(null)
+        setImage3(null)
+        setPrice('')
+      }
+      else {
+        toast.error(response.data.message)
+      }
 
     } catch (error) {
+      console.log(error);
 
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     }
   }
 

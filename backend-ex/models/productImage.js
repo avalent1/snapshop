@@ -7,7 +7,7 @@ exports.ProductImage = void 0;
 exports.associateProductImageModels = associateProductImageModels;
 const sequelize_1 = require("sequelize");
 const database_1 = __importDefault(require("../config/database"));
-const product_1 = require("./product");
+const Product_1 = require("./Product");
 class ProductImage extends sequelize_1.Model {
 }
 exports.ProductImage = ProductImage;
@@ -18,5 +18,5 @@ ProductImage.init({
     productId: { type: sequelize_1.DataTypes.INTEGER.UNSIGNED, allowNull: false },
 }, { sequelize: database_1.default, tableName: 'product_images' });
 function associateProductImageModels() {
-    ProductImage.belongsTo(product_1.Product, { foreignKey: 'productId' });
+    ProductImage.belongsTo(Product_1.Product, { foreignKey: 'productId' });
 }

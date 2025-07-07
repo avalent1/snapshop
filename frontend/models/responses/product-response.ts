@@ -1,11 +1,16 @@
+import { Image, Sizes } from "../Product";
+
 export interface ProductResponse{
-    _id: number;
+    success: boolean;
+    products: {
+    id: number;
     name: string;
     description: string;
     price: number;
-    image: string[];
+    images: Image[];
     category: string;
     subCategory: string;
-    sizes: string[];
+    sizes: Sizes[];
     bestseller: boolean;
+    }[]
 }

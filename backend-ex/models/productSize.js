@@ -7,7 +7,7 @@ exports.ProductSize = void 0;
 exports.associateProductSizeModels = associateProductSizeModels;
 const sequelize_1 = require("sequelize");
 const database_1 = __importDefault(require("../config/database"));
-const product_1 = require("./product");
+const Product_1 = require("./Product");
 class ProductSize extends sequelize_1.Model {
 }
 exports.ProductSize = ProductSize;
@@ -17,5 +17,5 @@ ProductSize.init({
     size: { type: sequelize_1.DataTypes.STRING, allowNull: false },
 }, { sequelize: database_1.default, tableName: 'product_sizes' });
 function associateProductSizeModels() {
-    ProductSize.belongsTo(product_1.Product, { foreignKey: 'productId' });
+    ProductSize.belongsTo(Product_1.Product, { foreignKey: 'productId' });
 }

@@ -1,11 +1,28 @@
 export interface Product {
-    _id: number;
+    id: number;
     name: string;
     description: string;
     price: number;
-    image: string[];
+    images: Image[];
     category: string;
     subCategory: string;
-    sizes: string[];
+    sizes: Sizes[];
     bestseller: boolean;
+}
+
+export interface Image {
+  createdAt: string;
+  id: number;
+  productId: number;
+  publicId: string;
+  updatedAt: string;
+  url: string;
+}
+
+export interface Sizes {
+    id: number;
+    productId: number;
+    size: string;
+    createdAt: string;
+    updatedAt: string;
 }

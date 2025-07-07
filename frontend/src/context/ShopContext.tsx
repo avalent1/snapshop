@@ -24,6 +24,7 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
 
     const currency = '$';
     const delivery_fee = 10;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
     const [search, setSearch] = useState<string>('');
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [cartItems, setCartItems] = useState<Record<number, CartItem>>({});
@@ -108,7 +109,7 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
         currency, delivery_fee, 
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate
+        getCartAmount, navigate, backendUrl
     }
 
     return (

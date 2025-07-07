@@ -1,8 +1,6 @@
-import type { Response } from "../../models/response";
-
-export function genericResponseMapper<T>(response: Response<T>): T {
-  if (response.errorCode > 0) {
-    throw new Error("Fetch Error: " + response.errorMessage);
+export function genericResponseMapper<T>(response: any): T {
+  if (!response.success) {
+    throw new Error("Fetch Error: " + response);
   }
-  return response.response;
+  return response;
 }

@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
-import { Product } from './product';
+import { Product } from './Product';
 
 interface ProductImageAttributes {
   id: number;

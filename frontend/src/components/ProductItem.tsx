@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 //import { ProductProps } from '../types/types';
 import { Link } from 'react-router-dom';
-import type { Product } from '../../../backend-ex/models/Product';
+import type { Product } from '../../models/Product';
 
 interface ProductProps {
   product: Product;

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "multer-storage-cloudinary": "^4.0.0",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0"
+  }
+}

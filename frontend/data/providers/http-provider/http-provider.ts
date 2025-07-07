@@ -4,7 +4,7 @@ import type { ProviderInterface } from "../../provider-interface";
 import type { Response } from "../../../models/response";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "http://localhost:4000",
   timeout: 1000,
 });
 

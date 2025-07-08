@@ -26,6 +26,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         const user = yield (0, userModel_1.findUserByEmail)(email);
+        console.log(user);
         if (!user) {
             res.json({ success: false, message: 'User does not exist' });
             return;

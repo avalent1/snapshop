@@ -4,8 +4,7 @@ import { getAllProductsResponseToProductsMapper } from "../../mappers/product/ge
 import { genericResponseMapper } from "../../mappers/generic-response-mapper";
 import { provider } from "../../providers/provider";
 
-export async function getAllProducts(request: GetAllProductsRequest) {
+export async function getAllProducts() {
   const responseData = await provider.get<GetAllProductsResponse>("/product/list");
-  console.log(responseData)
   return getAllProductsResponseToProductsMapper(genericResponseMapper<GetAllProductsResponse>(responseData));
 }

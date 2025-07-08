@@ -11,7 +11,7 @@ const [latestProducts, setLatestProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-    const productsData = await getAllProducts({page:0, size:0});
+    const productsData = await getAllProducts();
     setLatestProducts(productsData.slice(0, 10)); 
     };
 

@@ -18,6 +18,10 @@ export const ShopContext = createContext<ShopContextType>({
     updateQuantity: async () => {},
     getCartAmount: () => 0,
     navigate: '',
+    token: '',
+    setToken: () => {},
+    backendUrl: 'http://localhost:4000',
+    setCartItems: () => {},
 });
 
 const ShopContextProvider = (props: React.PropsWithChildren)=> {
@@ -29,11 +33,12 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [cartItems, setCartItems] = useState<Record<number, CartItem>>({});
     const [products, setProducts] = useState<Product[]>([]);
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
     
     useEffect(() => {
     const fetchProducts = async () => {
-    const productsData = await getAllProducts({page:0, size:0});
+    const productsData = await getAllProducts();
     setProducts(productsData.slice(0, 10)); 
     };
 
@@ -91,7 +96,7 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
     const getCartAmount = () => {
         let totalAmount = 0;
         for (const items in cartItems){
-            let itemInfo = products.find((product) => product._id === Number(items))
+            let itemInfo = products.find((product) => product.id === Number(items))
             for(const item in cartItems[items]){
                 try {
                     if (cartItems[items][item] > 0 && itemInfo){
@@ -105,11 +110,18 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
         return totalAmount;
     }
 
+    useEffect (() =>{
+        if (!token && localStorage.getItem('token')) {
+            setToken(localStorage.getItem('token') || '')
+        }
+    }, [])
+
     const value = {
         currency, delivery_fee, 
-        search, setSearch, showSearch, setShowSearch,
+        search, setSearch, showSearch, setShowSearch, setCartItems,
         cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate, backendUrl
+        getCartAmount, navigate, backendUrl, token,
+        setToken
     }
 
     return (

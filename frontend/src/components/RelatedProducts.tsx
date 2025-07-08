@@ -12,7 +12,7 @@ const RelatedProducts = ({category, subCategory}: RelatedProductsProps) => {
     
       useEffect(() => {
         const fetchProducts = async () => {
-        const productsData = await getAllProducts({page:0, size:0});
+        const productsData = await getAllProducts();
         setProducts(productsData.slice(0, 10)); 
         };
     

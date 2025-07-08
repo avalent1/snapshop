@@ -19,7 +19,7 @@ const Collection: React.FC = () => {
 
   useEffect(() => {
       const fetchProducts = async () => {
-      const productsData = await getAllProducts({page:0, size:0});
+      const productsData = await getAllProducts();
       setAllProducts(productsData);
       setFilterProducts(productsData); 
       };

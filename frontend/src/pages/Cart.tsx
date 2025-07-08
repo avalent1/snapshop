@@ -16,7 +16,7 @@ const Cart: React.FC = () => {
   
     useEffect(() => {
       const fetchProducts = async () => {
-      const productsData = await getAllProducts({page:0, size:0});
+      const productsData = await getAllProducts();
       setProducts(productsData); 
       };
   
@@ -49,12 +49,12 @@ const Cart: React.FC = () => {
       <div>
         {
           cartData.map((item, index) => {
-            const productData = products.find((product) => product._id === item._id);
+            const productData = products.find((product) => product.id === item._id);
             if (!productData) return null;
             return (
               <div key={index} className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-col-[4fr_2fr_0.5fr] items-center gap-4">
                 <div className='flex items-start gap-6'>
-                  <img className='w-16 sm:w-20' src={productData.image[0]} alt="" />
+                  <img className='w-16 sm:w-20' src={productData.images[0].url} alt="" />
                   <div>
                     <p className='text.xs sn:text-lg font-medium'>{productData.name}</p>
                     <div className='flex items-center gap-5 mt-2'>

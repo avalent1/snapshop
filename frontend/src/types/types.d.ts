@@ -25,6 +25,10 @@ export interface ShopContextType {
     updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
     getCartAmount: () => number;
     navigate: NavigateFunction;
+    token: string;
+    setToken: (value: string) => void;
+    backendUrl: string;
+    setCartItems: React.Dispatch<React.SetStateAction<Record<number, CartItem>>>
 }
 
 export interface RelatedProductsProps {

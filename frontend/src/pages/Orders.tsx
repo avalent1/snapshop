@@ -10,7 +10,7 @@ const Orders = () => {
   
     useEffect(() => {
       const fetchProducts = async () => {
-      const productsData = await getAllProducts({page:0, size:0});
+      const productsData = await getAllProducts();
       setProducts(productsData.slice(0, 10)); 
       };
   
@@ -29,7 +29,7 @@ const Orders = () => {
           products.slice(1,4).map((item, index)=>(
             <div key={index} className='py-4 border-t text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
               <div className='flex items-start gap-6 text-sm'>
-                <img className='w-16 sm:w-20' src={item.image[0]} alt="" />
+                <img className='w-16 sm:w-20' src={item.images[0].url} alt="" />
                 <div>
                   <p className='sm:text-baes font-medium'>{item.name}</p>
                   <div className='flex items-center gap-3 mt-2 text-base text-gray-700'>

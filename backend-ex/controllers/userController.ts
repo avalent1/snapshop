@@ -13,6 +13,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password }: { email: string; password: string } = req.body;
     const user = await findUserByEmail(email);
+    console.log(user)
 
     if (!user) {
       res.json({ success: false, message: 'User does not exist' });
@@ -22,10 +23,10 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const isMatch = await bcrypt.compare(password, user.password || '');
 
     if (isMatch) {
-      const token = createToken(user.id); // assuming `id` instead of `userId`
+      const token = createToken(user.id)
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: 'Invalid credentials' });
+      res.json({ success: false, message: 'Ugh... something went wrong. Maybe invalid credentials?' });
     }
   } catch (error: any) {
     console.error(error);

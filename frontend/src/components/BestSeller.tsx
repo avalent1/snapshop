@@ -11,7 +11,7 @@ const BestSeller = () => {
     
       useEffect(() => {
         const fetchProducts = async () => {
-        const productsData = await getAllProducts({page:0, size:0});
+        const productsData = await getAllProducts();
         setBestSeller(productsData.filter((item) => item.bestseller).slice(0, 5)); 
         };
     

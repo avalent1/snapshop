@@ -9,6 +9,7 @@ const cloudinary_1 = __importDefault(require("./config/cloudinary"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const productRoute_1 = __importDefault(require("./routes/productRoute"));
 const cors_1 = __importDefault(require("cors"));
+const cartRoute_1 = __importDefault(require("./routes/cartRoute"));
 // app config
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
@@ -21,6 +22,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 // api endpoints
 app.use('/api/user', userRoute_1.default);
 app.use('/api/product', productRoute_1.default);
+app.use('/api/cart', cartRoute_1.default);
 app.get('/', (req, res) => {
     res.send("API working");
 });

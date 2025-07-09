@@ -1,11 +1,13 @@
 import sequelize from '../config/database'; 
 import { QueryTypes } from 'sequelize';
+import { Cart } from './cartModel';
 
 export interface User {
   id: number;
   name: string;
   email: string;
   password?: string;
+  cart_data: Cart[];
 }
 
 export const findUserByEmail = async (email: string): Promise<User | undefined> => {

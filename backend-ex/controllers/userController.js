@@ -33,11 +33,11 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const isMatch = yield bcrypt_1.default.compare(password, user.password || '');
         if (isMatch) {
-            const token = createToken(user.id); // assuming `id` instead of `userId`
+            const token = createToken(user.id);
             res.json({ success: true, token });
         }
         else {
-            res.json({ success: false, message: 'Invalid credentials' });
+            res.json({ success: false, message: 'Ugh... something went wrong. Maybe invalid credentials?' });
         }
     }
     catch (error) {

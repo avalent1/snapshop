@@ -4,6 +4,7 @@ import { Product } from "../../models/Product";
 import { toast } from "react-toastify";
 import { getAllProducts } from "../../data/endpoints/product/get-all-products";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const ShopContext = createContext<ShopContextType>({
     currency: '$',
@@ -67,6 +68,15 @@ const ShopContextProvider = (props: React.PropsWithChildren)=> {
             cartData[itemId][size] = 1;
         }
         setCartItems(cartData);
+
+        if (token){
+            try {
+                console.log(itemId, size)
+                await axios.post(backendUrl + '/api/cart/add', {itemId, size}, {headers:{token}})
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 
     const getCartCount = () => {

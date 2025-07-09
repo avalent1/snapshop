@@ -4,6 +4,7 @@ import connectCloudinary from './config/cloudinary';
 import userRouter from './routes/userRoute';
 import productRouter from './routes/productRoute';
 import cors from 'cors';
+import cartRouter from './routes/cartRoute';
 
 // app config
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // api endpoints
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
+app.use('/api/cart', cartRouter)
 
 
 app.get('/', (req, res) => {

@@ -3,8 +3,8 @@ import axios, { AxiosHeaders, type AxiosRequestConfig } from "axios";
 import type { ProviderInterface } from "../../provider-interface";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api",
-  timeout: 1000,
+  baseURL: "http://localhost:4001/api",
+  timeout: 2000,
 });
 
 axiosInstance.interceptors.request.use(

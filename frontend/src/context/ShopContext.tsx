@@ -22,7 +22,7 @@ export const ShopContext = createContext<ShopContextType>({
     navigate: (to: string) => { },
     token: '',
     setToken: () => { },
-    backendUrl: 'http://localhost:4000',
+    backendUrl: 'http://localhost:4001',
     setCartItems: () => { },
 
 });

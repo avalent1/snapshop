@@ -1,5 +1,3 @@
-
-
 import { Request, Response } from 'express';
 import { createProductWithAssets, deleteProductById } from '../services/productService';
 import { Product } from '../models/productModel';

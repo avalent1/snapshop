@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { findUserByEmail, insertUser, getAllUsers, User } from '../models/userModel';
+import { findUserByEmail, insertUser, getAllUsers, getUserById } from '../models/userModel';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -98,5 +98,19 @@ export const fetchAllUsers = async (req: Request, res: Response): Promise<void> 
   } catch (error: any) {
     console.error('Error fetching users:', error);
     res.status(500).json({ message: 'Failed to fetch users' });
+  }
+};
+
+export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Assuming authenticate middleware sets req.user from token
+    const userId = req.body.user.id;
+    const user = await getUserById(userId); // You implement this function
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
   }
 };

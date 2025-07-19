@@ -9,12 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserCart = exports.updateCart = exports.addToCart = void 0;
+exports.removeFromCart = exports.getUserCart = exports.updateCart = exports.addToCart = void 0;
 const cartModel_1 = require("../models/cartModel");
 const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, itemId, size } = req.body;
+        const { itemId, size } = req.body;
+        const userId = req.userId;
         const existingItem = yield (0, cartModel_1.findCartItem)(userId, itemId, size);
+        console.log(userId, itemId, size);
         if (existingItem) {
             yield (0, cartModel_1.incrementCartItemQuantity)(userId, itemId, size);
             return res.json({ message: 'Quantity updated.' });
@@ -32,7 +34,8 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addToCart = addToCart;
 const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, itemId, size, quantity } = req.body;
+        const { itemId, size, quantity } = req.body;
+        const userId = req.userId;
         const existingItem = yield (0, cartModel_1.findCartItem)(userId, itemId, size);
         if (!existingItem) {
             return res.status(404).json({ error: 'Item not found in cart.' });
@@ -48,12 +51,13 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.updateCart = updateCart;
 const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userId = Number(req.params.userId);
+        console.log("req:", req);
+        const userId = Number(req.userId);
         if (isNaN(userId)) {
             return res.status(400).json({ error: 'Invalid userId parameter.' });
         }
         const cartItems = yield (0, cartModel_1.getCartItemsByUser)(userId);
-        return res.json({ cart: cartItems });
+        return res.json({ cartData: cartItems });
     }
     catch (error) {
         console.error('Error in getUserCart:', error);
@@ -61,3 +65,22 @@ const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserCart = getUserCart;
+const removeFromCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { itemId, size } = req.body;
+        const userId = req.userId; // postavljeno u auth middleware‑u
+        // 1) Provjeri postoji li stavka
+        const existingItem = yield (0, cartModel_1.findCartItem)(userId, itemId, size);
+        if (!existingItem) {
+            return res.status(404).json({ error: 'Item not found in cart.' });
+        }
+        // 2) Obriši je
+        yield (0, cartModel_1.deleteCartItem)(userId, itemId, size);
+        return res.json({ message: 'Item removed from cart.' });
+    }
+    catch (error) {
+        console.error('Error in removeFromCart:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+exports.removeFromCart = removeFromCart;

@@ -8,37 +8,37 @@ import CartTotal from '../components/CartTotal';
 
 const Cart: React.FC = () => {
 
-  const  {currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { currency, cartItems, updateQuantity, navigate, removeFromCart } = useContext(ShopContext);
   const [products, setProducts] = useState<Product[]>([]);
   const tempData: { _id: number; size: string; quantity: number }[] = [];
 
   const [cartData, setCartData] = useState<{ _id: number; size: string; quantity: number }[]>([]);
-  
-    useEffect(() => {
-      const fetchProducts = async () => {
+
+  useEffect(() => {
+    const fetchProducts = async () => {
       const productsData = await getAllProducts();
-      setProducts(productsData); 
-      };
-  
-      fetchProducts();
-    }, []);
+      setProducts(productsData);
+    };
 
-    useEffect(() => {
+    fetchProducts();
+  }, [removeFromCart]);
 
-      for (const items in cartItems) {
-        for (const item in cartItems[items]){
-          if (cartItems[items][item] > 0 ){
+  useEffect(() => {
+
+    if (products.length > 0) {
+      for (let i=0;i<cartItems.length;i++) {
+          const item = cartItems[i];
             tempData.push({
-              _id: Number(items),
-              size: item,
-              quantity:cartItems[items][item]
+              _id: Number(item.productId),
+              size: item.size.toString(),
+              quantity: item.quantity
             })
-          }
-        }
+          
+        
       }
       setCartData(tempData);
-
-    }, [cartItems]);
+    }
+  }, [cartItems, products]);
 
   return (
     <div className='border-t pt-14'>
@@ -63,8 +63,8 @@ const Cart: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <input onChange={(e)=>e.target.value === '' || e.target.value === '0' ? null : updateQuantity({ itemId: item._id, size: item.size, quantity: Number(e.target.value)})} className='border max-w-10 sm:mx-w-20 px-1 sm:px2 py-1' type="number" min={1} defaultValue={item.quantity} />
-                <img onClick={() => updateQuantity({ itemId: item._id, size: item.size, quantity: 0 })} className='w-4 mr-4 sm:w-5 cursor-pointer' src={assets.bin_icon} alt="" />
+                <input onChange={(e) => e.target.value === '' || e.target.value === '0' ? null : updateQuantity({ itemId: item._id, size: item.size, quantity: Number(e.target.value) })} className='border max-w-10 sm:mx-w-20 px-1 sm:px2 py-1' type="number" min={1} defaultValue={item.quantity} />
+                <img onClick={() => removeFromCart({ itemId: item._id, size: item.size, quantity: 0 })} className='w-4 mr-4 sm:w-5 cursor-pointer' src={assets.bin_icon} alt="" />
               </div>
             );
           })
@@ -75,7 +75,7 @@ const Cart: React.FC = () => {
         <div className='w-full sm:w.[450px]'>
           <CartTotal />
           <div className='w-full text-end'>
-            <button onClick={() => navigate ('/place-order')} className='bg-black text-white text-sm my-8 px-8 py-3'>PROCEED TO CHECKOUT</button>
+            <button onClick={() => navigate('/place-order')} className='bg-black text-white text-sm my-8 px-8 py-3'>PROCEED TO CHECKOUT</button>
           </div>
         </div>
       </div>

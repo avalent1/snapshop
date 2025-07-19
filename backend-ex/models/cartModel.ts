@@ -69,10 +69,25 @@ export const updateCartItemQuantity = async (
 
 export const getCartItemsByUser = async (userId: number): Promise<Cart[]> => {
   return await sequelize.query<Cart>(
-    `SELECT * FROM cart_items WHERE user_id = :userId`,
+    `select ci.id as id, ci.user_id as userId, ci.product_id as productId, ci.size, ci.quantity, p.price from cart_items ci join products p on ci.product_id=p.id where ci.user_id=:userId`,
     {
       replacements: { userId },
       type: QueryTypes.SELECT,
+    }
+  );
+};
+
+export const deleteCartItem = async (
+  userId: number,
+  productId: number,
+  size: string
+): Promise<void> => {
+  await sequelize.query(
+    `DELETE FROM cart_items
+     WHERE user_id = :userId AND product_id = :productId AND size = :size`,
+    {
+      replacements: { userId, productId, size },
+      type: QueryTypes.DELETE,   // koristi odgovarajući QueryType
     }
   );
 };

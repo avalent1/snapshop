@@ -9,26 +9,27 @@ export type ProductProps = {
   _id: number;
   image: string;
   name: string;
-  price: number; 
+  price: number;
 };
 
 export interface ShopContextType {
-    currency: string;
-    delivery_fee: number;
-    search: string;
-    setSearch: (value: string) => void;
-    showSearch: boolean;
-    setShowSearch: (value: boolean) => void;
-    cartItems: Record<number, CartItem>;
-    addToCart: (props: AddToCartProps) => Promise<void>;
-    getCartCount: () => number;
-    updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
-    getCartAmount: () => number;
-    navigate: NavigateFunction;
-    token: string;
-    setToken: (value: string) => void;
-    backendUrl: string;
-    setCartItems: React.Dispatch<React.SetStateAction<Record<number, CartItem>>>
+  currency: string;
+  delivery_fee: number;
+  search: string;
+  setSearch: (value: string) => void;
+  showSearch: boolean;
+  setShowSearch: (value: boolean) => void;
+  cartItems: CartItem[];
+  addToCart: (props: AddToCartProps) => Promise<void>;
+  getCartCount: () => number;
+  updateQuantity: (props: RemoveFromCartProps) => Promise<void>;
+  removeFromCart: (props: RemoveFromCartProps) => Promise<void>;
+  getCartAmount: () => number;
+  navigate: (to: string) => void;
+  token: string;
+  setToken: (value: string) => void;
+  backendUrl: string;
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
 export interface RelatedProductsProps {
@@ -45,12 +46,10 @@ export interface AddToCartProps {
 export interface RemoveFromCartProps {
   itemId: number;
   size: string;
-  quantity:number;
+  quantity: number;
 }
 
-export type CartItem = {
-        [size: string]: number;
-    };
+export type CartItem = any;
 
 export interface CartDataProps {
   itemId: number;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchAllUsers = exports.adminLogin = exports.registerUser = exports.loginUser = void 0;
+exports.getCurrentUser = exports.fetchAllUsers = exports.adminLogin = exports.registerUser = exports.loginUser = void 0;
 const userModel_1 = require("../models/userModel");
 const validator_1 = __importDefault(require("validator"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -108,3 +108,18 @@ const fetchAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.fetchAllUsers = fetchAllUsers;
+const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Assuming authenticate middleware sets req.user from token
+        const userId = req.body.user.id;
+        const user = yield (0, userModel_1.getUserById)(userId); // You implement this function
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+exports.getCurrentUser = getCurrentUser;

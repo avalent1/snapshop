@@ -73,7 +73,7 @@ export async function deleteProductById(productId: number): Promise<void> {
     });
 
     if (!product) {
-      throw new Error('Product not found');
+      throw new Error('Product not founsssd');
     }
 
     // 2. Delete images from Cloudinary

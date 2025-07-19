@@ -93,7 +93,7 @@ const singleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             ],
         });
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404);
         }
         res.json(product);
     }

@@ -10,4 +10,5 @@ userRouter.post('/register', userController_js_1.registerUser);
 userRouter.post('/login', userController_js_1.loginUser);
 userRouter.post('/admin', userController_js_1.adminLogin);
 userRouter.get('/all', userController_js_1.fetchAllUsers);
+userRouter.get('/me', userController_js_1.getCurrentUser);
 exports.default = userRouter;

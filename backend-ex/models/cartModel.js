@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCartItemsByUser = exports.updateCartItemQuantity = exports.insertCartItem = exports.incrementCartItemQuantity = exports.findCartItem = void 0;
+exports.deleteCartItem = exports.getCartItemsByUser = exports.updateCartItemQuantity = exports.insertCartItem = exports.incrementCartItemQuantity = exports.findCartItem = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const sequelize_1 = require("sequelize");
 const findCartItem = (userId, productId, size) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,9 +50,17 @@ const updateCartItemQuantity = (userId, productId, size, quantity) => __awaiter(
 });
 exports.updateCartItemQuantity = updateCartItemQuantity;
 const getCartItemsByUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield database_1.default.query(`SELECT * FROM cart_items WHERE user_id = :userId`, {
+    return yield database_1.default.query(`select ci.id as id, ci.user_id as userId, ci.product_id as productId, ci.size, ci.quantity, p.price from cart_items ci join products p on ci.product_id=p.id where ci.user_id=:userId`, {
         replacements: { userId },
         type: sequelize_1.QueryTypes.SELECT,
     });
 });
 exports.getCartItemsByUser = getCartItemsByUser;
+const deleteCartItem = (userId, productId, size) => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.default.query(`DELETE FROM cart_items
+     WHERE user_id = :userId AND product_id = :productId AND size = :size`, {
+        replacements: { userId, productId, size },
+        type: sequelize_1.QueryTypes.DELETE, // koristi odgovarajući QueryType
+    });
+});
+exports.deleteCartItem = deleteCartItem;

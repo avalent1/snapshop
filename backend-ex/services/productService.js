@@ -65,7 +65,7 @@ function deleteProductById(productId) {
                 transaction: tx,
             });
             if (!product) {
-                throw new Error('Product not found');
+                throw new Error('Product not founsssd');
             }
             // 2. Delete images from Cloudinary
             if (product.images && product.images.length > 0) {

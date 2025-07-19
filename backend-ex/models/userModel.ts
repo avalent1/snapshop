@@ -47,3 +47,15 @@ export const getAllUsers = async (): Promise<Omit<User, 'password'>[]> => {
   );
   return users;
 };
+
+export const getUserById = async (id: number): Promise<Omit<User, 'password'> | undefined> => {
+  const users = await sequelize.query<Omit<User, 'password'>>(
+    'SELECT id, name, email FROM users WHERE id = ?',
+    {
+      replacements: [id],
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  return users[0];
+};

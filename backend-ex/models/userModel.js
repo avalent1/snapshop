@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.insertUser = exports.findUserByEmail = void 0;
+exports.getUserById = exports.getAllUsers = exports.insertUser = exports.findUserByEmail = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const sequelize_1 = require("sequelize");
 const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,3 +39,11 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return users;
 });
 exports.getAllUsers = getAllUsers;
+const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield database_1.default.query('SELECT id, name, email FROM users WHERE id = ?', {
+        replacements: [id],
+        type: sequelize_1.QueryTypes.SELECT,
+    });
+    return users[0];
+});
+exports.getUserById = getUserById;

@@ -1,11 +1,206 @@
-import React from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { getAllProducts } from '../../data/endpoints/product/get-all-products';
+import type { Product } from '../../models/Product';
+import { assets } from '../assets/assets';
+import { ShopContext } from '../context/ShopContext';
+import RelatedProducts from '../components/RelatedProducts';
+import gsap from 'gsap';
 
-const Product = () => {
-  return (
-    <div>
-      
+const Product: React.FC = () => {
+  const { productId } = useParams<{ productId: string }>();
+  const numProductId = productId ? Number(productId) : undefined;
+  const { currency, addToCart } = useContext(ShopContext);
+  const [productData, setProductData] = useState<Product>();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [size, setSize] = useState<string>('');
+  const [image, setImage] = useState<string>('');
+  const mainImageRef = useRef<HTMLImageElement>(null);
+
+  const buttonRef = useRef(null);
+  const confettiRef = useRef([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const productsData = await getAllProducts();
+      setProducts(productsData);
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleAddToCart = () => {
+    if (!productData?.id || !size) return;
+
+    // GSAP animacija
+    const tl = gsap.timeline();
+
+    tl.to(buttonRef.current, {
+      scale: 1.2,
+      y: -10,
+      duration: 0.2,
+      ease: 'power1.out',
+    })
+      .to(buttonRef.current, {
+        scaleX: 1.4,
+        scaleY: 0.8,
+        rotation: 5,
+        duration: 0.1,
+        ease: 'power1.inOut',
+      })
+      .to(buttonRef.current, {
+        scaleX: 1,
+        scaleY: 1,
+        rotation: -5,
+        duration: 0.1,
+        ease: 'power1.inOut',
+      })
+      .to(buttonRef.current, {
+        rotation: 0,
+        y: 0,
+        duration: 0.2,
+        ease: 'bounce.out',
+      });
+
+
+    // Dodavanje u košaricu
+    addToCart({ itemId: productData.id, size });
+  };
+
+  const fetchProductData = async () => {
+    products.map((item) => {
+      if (item.id === numProductId) {
+        setProductData(item);
+        setImage(item.images[0].url);
+        return null;
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (numProductId !== undefined) {
+      fetchProductData();
+    }
+  }, [numProductId, products]);
+
+  // GSAP animacija za promjenu slike
+  const changeImage = (newUrl: string) => {
+    if (!mainImageRef.current || image === newUrl) return; // ne animiraj ako je ista slika
+
+    gsap.to(mainImageRef.current, {
+      duration: 0.4,
+      x: -50,
+      opacity: 0,
+      scale: 0.8,
+      ease: 'power2.out',
+      onComplete: () => {
+        setImage(newUrl);
+        gsap.fromTo(
+          mainImageRef.current,
+          { x: 50, opacity: 0, scale: 0.8 },
+          { duration: 0.4, x: 0, opacity: 1, scale: 1, ease: 'power2.out' }
+        );
+      },
+    });
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [productId]);
+
+
+  return productData ? (
+    <div className='border-t-2 pt-10 transition-opacity ease-in-out duration-500 opacity-100'>
+
+      <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
+        {/* Product images section */}
+        <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
+
+          <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
+            {
+              productData.images.map((item, index) => (
+                <img
+                  onClick={() => changeImage(item.url)}
+                  src={item.url}
+                  key={index}
+                  className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer'
+                  alt=""
+                />
+              ))
+            }
+          </div>
+
+          <div className='w-full sm:w-[80%]'>
+            <img ref={mainImageRef} className='w-full h-auto' src={image} alt="" />
+          </div>
+        </div>
+
+        {/* Product details section */}
+        <div className='flex-1'>
+          <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
+          <div className='flex items-center gap-1 mt-2'>
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_dull_icon} alt="" className="w-3 5" />
+            <p className='pl-2'>(122)</p>
+          </div>
+          <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
+          <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
+
+          <div className='flex flex-col gap-4 my-8'>
+            <p>Select Size</p>
+            <div className='flex gap-2'>
+              {productData.sizes.map((item, index) => (
+                <button
+                  onClick={() => setSize(item.size)}
+                  className={`border py-2 px-4 bg-gray-100 ${item.size === size ? 'border-orange-500' : ''}`}
+                  key={index}
+                >
+                  {item.size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleAddToCart()} ref={buttonRef}
+            className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'
+          >
+            ADD TO CART
+          </button>
+          
+          <hr className='mt-8 sm:w-4/5' />
+          <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
+            <p>100% Original product.</p>
+            <p>Cash on delivery is available on this product.</p>
+            <p>Easy return and exchange policy within 7 days.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Review section */}
+
+      <div className='mt-20'>
+        <div className='flex'>
+          <b className='border px-5 py-3 text-sm'>Description</b>
+          <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
+        </div>
+        <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
+          <p>E-commerce websites are online platforms that enable businesses and individuals to buy and sell goods or services over the internet. These sites provide a convenient shopping experience, allowing customers to browse products, compare prices, and make purchases from anywhere at any time.</p>
+          <p>E-commerce platforms often include features such as product catalogs, shopping carts, secure payment gateways, and customer reviews. They play a crucial role in the modern economy by connecting buyers and sellers globally, streamlining transactions, and offering a wide variety of products that may not be available locally.</p>
+        </div>
+      </div>
+
+      {/* Related products section */}
+
+      <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+
+
     </div>
-  )
+  ) :
+    <div className='opacity-0'></div>
 }
 
 export default Product

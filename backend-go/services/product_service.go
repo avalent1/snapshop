@@ -89,7 +89,7 @@ func CreateProductWithAssets(db *gorm.DB, data NewProductDTO, files []*multipart
 	return createdProduct, nil
 }
 
-func DeleteProductByID(db *gorm.DB, productID uint) error {
+func DeleteProductByID(db *gorm.DB, productID int) error {
 	cld, err := utils.ConnectCloudinary()
 	if err != nil {
 		return err

@@ -30,7 +30,7 @@ func (r *CartRepository) IncrementCartItemQuantity(userID, productID uint, size 
 		Update("quantity", gorm.Expr("quantity + ?", 1)).Error
 }
 
-func (r *CartRepository) InsertCartItem(userID, productID uint, size string) error {
+func (r *CartRepository) InsertCartItem(userID, productID int, size string) error {
 	cart := models.Cart{
 		UserID:    userID,
 		ProductID: productID,

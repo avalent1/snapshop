@@ -8,7 +8,7 @@ import (
 	"github.com/avalent1/snapshop/middleware"
 )
 
-func RegisterProductRoutes(rg *gin.RouterGroup, db *gorm.DB) {
+func ProductRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 	productGroup := rg.Group("/product")
 
 	// Add product (POST /products/add)

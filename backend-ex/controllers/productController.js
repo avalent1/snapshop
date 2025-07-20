@@ -67,7 +67,7 @@ const listProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.listProducts = listProducts;
 const removeProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const productId = Number(req.body.id); // or req.params.id if you prefer
+        const productId = Number(req.body.id);
         if (!productId || isNaN(productId)) {
             return res.status(400).json({ message: 'Invalid product ID' });
         }

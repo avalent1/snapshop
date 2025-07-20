@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -9,158 +10,102 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-
-func parseToken(tokenStr string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		// Provjeri da se koristi HMAC algoritam
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, jwt.ErrSignatureInvalid
-		}
-		return jwtSecret, nil
-	})
-
-	if err != nil || !token.Valid {
-		return nil, err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, jwt.ErrTokenMalformed
-	}
-
-	return claims, nil
+type AdminClaims struct {
+	Email string `json:"email"`
+	jwt.RegisteredClaims
 }
 
-func AdminAuth() gin.HandlerFunc {
+// CustomClaims predstavlja payload tokena (isti kao payload iz Node.js: { id: number, ... })
+type CustomClaims struct {
+	ID int `json:"id"`
+	jwt.RegisteredClaims
+}
+
+// AuthUser je kao prva middleware funkcija - čita token iz `headers.token`
+func AuthUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Dohvati token iz zaglavlja
-		tokenString := c.GetHeader("token")
-		if tokenString == "" {
+		tokenHeader := c.GetHeader("token")
+		if tokenHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
 			c.Abort()
 			return
 		}
 
-		// Parsiranje i validacija JWT tokena
-		secret := os.Getenv("JWT_SECRET")
-		if secret == "" {
-			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "JWT secret not set"})
-			c.Abort()
-			return
-		}
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// Provjeri da koristi ispravni algoritam
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, jwt.ErrSignatureInvalid
-			}
-			return []byte(secret), nil
+		claims := &CustomClaims{}
+		token, err := jwt.ParseWithClaims(tokenHeader, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token"})
-			c.Abort()
-			return
-		}
-
-		// Provjera emaila
-		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			email, ok := claims["email"].(string)
-			if !ok || !strings.EqualFold(email, os.Getenv("ADMIN_EMAIL")) {
-				c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
-				c.Abort()
-				return
-			}
-		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid claims"})
-			c.Abort()
-			return
-		}
-
-		// Ako je sve prošlo
-		c.Next()
-	}
-}
-func AuthUser() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token := c.GetHeader("token")
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
-			c.Abort()
-			return
-		}
-
-		claims, err := parseToken(token)
-		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token, Login Again"})
 			c.Abort()
 			return
 		}
 
-		// Pretpostavljamo da token sadrži "id" claim
-		userID, ok := claims["id"].(float64)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token payload"})
-			c.Abort()
-			return
-		}
-
-		c.Set("userID", uint(userID))
+		c.Set("userId", claims.ID)
 		c.Next()
 	}
 }
 
+// AuthUser1 je kao druga verzija - koristi `Authorization: Bearer <token>`
 func AuthUser1() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		auth := c.GetHeader("Authorization")
-		if !strings.HasPrefix(auth, "Bearer ") {
+		authHeader := c.GetHeader("Authorization")
+		fmt.Println("Auth header: ", authHeader)
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
 			c.Abort()
 			return
 		}
 
-		token := strings.TrimPrefix(auth, "Bearer ")
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		claims := &CustomClaims{}
+		fmt.Println("Decoded ID from JWT:", claims.ID)
+		fmt.Println("Token:", tokenString)
 
-		claims, err := parseToken(token)
-		if err != nil {
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		})
+
+		if err != nil || !token.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token, Login Again"})
+			c.Abort()
+			return
+		}
+		fmt.Println("Decoded ID from JWT:", claims.ID)
+		c.Set("userId", claims.ID)
+		c.Next()
+	}
+}
+
+// Authenticate je treća verzija - stavlja cijeli decoded payload u kontekst
+
+func AdminAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenHeader := c.GetHeader("token")
+		if tokenHeader == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
+			c.Abort()
+			return
+		}
+
+		claims := &AdminClaims{}
+		token, err := jwt.ParseWithClaims(tokenHeader, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		})
+
+		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token, Login Again"})
 			c.Abort()
 			return
 		}
 
-		userID, ok := claims["id"].(float64)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Invalid token payload"})
+		if claims.Email != os.Getenv("ADMIN_EMAIL") {
+			c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Not Authorized, Login Again"})
 			c.Abort()
 			return
 		}
 
-		c.Set("userID", uint(userID))
-		c.Next()
-	}
-}
-
-func Authenticate() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		auth := c.GetHeader("Authorization")
-		if !strings.HasPrefix(auth, "Bearer ") {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		token := strings.TrimPrefix(auth, "Bearer ")
-
-		claims, err := parseToken(token)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token"})
-			c.Abort()
-			return
-		}
-
-		// spremamo cijeli payload
-		c.Set("user", claims)
 		c.Next()
 	}
 }

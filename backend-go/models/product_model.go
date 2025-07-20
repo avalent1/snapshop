@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 // Product represents the `products` table.
 //
 // ┌──────────────┐          ┌────────────────┐
@@ -23,6 +19,4 @@ type Product struct {
 	Bestseller  bool           `gorm:"default:false" json:"bestseller"`
 	Images      []ProductImage `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;" json:"images"`
 	Sizes       []ProductSize  `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;" json:"sizes"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
 }

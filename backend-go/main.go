@@ -41,9 +41,9 @@ func main() {
 
 	// Middleware
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:5174"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "token"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -54,9 +54,9 @@ func main() {
 	// API route group
 	api := router.Group("/api")
 	{
-		routes.RegisterProductRoutes(api, db)
-		// routes.UserRoutes(api, db)
-		// routes.CartRoutes(api, db)
+		routes.ProductRoutes(api, db)
+		routes.UserRoutes(api, db)
+		routes.CartRoutes(api, db)
 	}
 
 	// Test ruta

@@ -74,7 +74,7 @@ const listProducts = async (req: Request, res: Response) => {
 
 const removeProduct = async (req: Request, res: Response) => {
   try {
-    const productId = Number(req.body.id); // or req.params.id if you prefer
+    const productId = Number(req.body.id); 
     if (!productId || isNaN(productId)) {
       return res.status(400).json({ message: 'Invalid product ID' });
     }

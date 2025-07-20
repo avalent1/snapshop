@@ -20,7 +20,7 @@ const List: React.FC<RemoveProps> = ({ token }) => {
       console.log(response.data)
       if (response.data.success) {
         setList(response.data.products);
-        //console.log(response.data)
+        console.log(response.data)
       }
       else {
         toast.error(response.data.message)
@@ -53,7 +53,7 @@ const List: React.FC<RemoveProps> = ({ token }) => {
         //fetchList();
       }
       else {
-        toast.error(response.data.message)
+        toast.success(response.data.message)
         fetchList();
       }
 

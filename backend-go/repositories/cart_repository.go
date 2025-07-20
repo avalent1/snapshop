@@ -15,7 +15,7 @@ func (r *CartRepository) NewCartRepository(db *gorm.DB) *CartRepository {
 	return &CartRepository{DB: db}
 }
 
-func FindCartItem(userID uint, productID uint, size string) (*models.Cart, error) {
+func FindCartItem(userID int, productID int, size string) (*models.Cart, error) {
 	var cart models.Cart
 	result := config.DB.Raw(`
 		SELECT * FROM cart_items 
@@ -35,7 +35,7 @@ func FindCartItem(userID uint, productID uint, size string) (*models.Cart, error
 	return &cart, nil
 }
 
-func IncrementCartItemQuantity(userID uint, productID uint, size string) error {
+func IncrementCartItemQuantity(userID int, productID int, size string) error {
 	result := config.DB.Exec(`
 		UPDATE cart_items 
 		SET quantity = quantity + 1 
@@ -45,7 +45,7 @@ func IncrementCartItemQuantity(userID uint, productID uint, size string) error {
 	return result.Error
 }
 
-func InsertCartItem(userID uint, productID uint, size string) error {
+func InsertCartItem(userID int, productID int, size string) error {
 	result := config.DB.Exec(`
 		INSERT INTO cart_items (user_id, product_id, size, quantity)
 		VALUES (?, ?, ?, 1)
@@ -54,7 +54,7 @@ func InsertCartItem(userID uint, productID uint, size string) error {
 	return result.Error
 }
 
-func UpdateCartItemQuantity(userID uint, productID uint, size string, quantity int) error {
+func UpdateCartItemQuantity(userID int, productID int, size string, quantity int) error {
 	result := config.DB.Exec(`
 		UPDATE cart_items 
 		SET quantity = ? 
@@ -64,11 +64,24 @@ func UpdateCartItemQuantity(userID uint, productID uint, size string, quantity i
 	return result.Error
 }
 
-func GetCartItemsByUser(userID uint) ([]models.Cart, error) {
+func GetCartItemsByUser(db *gorm.DB, userID int) ([]models.Cart, error) {
 	var items []models.Cart
-	result := config.DB.Raw(`
-		SELECT * FROM cart_items WHERE user_id = ?
+
+	result := db.Raw(`
+		SELECT ci.id, ci.user_id, ci.product_id, ci.size, ci.quantity, p.price
+		FROM cart_items ci
+		JOIN products p ON ci.product_id = p.id
+		WHERE ci.user_id = ?
 	`, userID).Scan(&items)
 
 	return items, result.Error
+}
+
+func DeleteCartItem(userID int, productID int, size string) error {
+	result := config.DB.Exec(`
+		DELETE FROM cart_items
+		WHERE user_id = ? AND product_id = ? AND size = ?
+	`, userID, productID, size)
+
+	return result.Error
 }

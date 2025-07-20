@@ -13,13 +13,13 @@ import (
 )
 
 type ProductInput struct {
-	name        string   `form:"name" binding:"required"`
-	description string   `form:"description"`
-	price       float64  `form:"price" binding:"required"`
-	category    string   `form:"category"`
-	subCategory string   `form:"subCategory"`
-	bestseller  bool     `form:"bestseller"`
-	sizes       []string `form:"sizes[]" binding:"required"`
+	Name        string   `form:"name" binding:"required" json:"name"`
+	Description string   `form:"description" json:"description"`
+	Price       float64  `form:"price" binding:"required" json:"price"`
+	Category    string   `form:"category" json:"category"`
+	SubCategory string   `form:"subCategory" json:"subCategory"`
+	Bestseller  bool     `form:"bestseller" json:"bestseller"`
+	Sizes       []string `form:"sizes[]" json:"Sizes"`
 }
 
 func AddProduct(db *gorm.DB) gin.HandlerFunc {
@@ -48,13 +48,13 @@ func AddProduct(db *gorm.DB) gin.HandlerFunc {
 
 		// Call service to create product
 		product, err := services.CreateProductWithAssets(db, services.NewProductDTO{
-			Name:        input.name,
-			Description: input.description,
-			Price:       input.price,
-			Category:    input.category,
-			SubCategory: input.subCategory,
-			Bestseller:  input.bestseller,
-			Sizes:       input.sizes,
+			Name:        input.Name,
+			Description: input.Description,
+			Price:       input.Price,
+			Category:    input.Category,
+			SubCategory: input.SubCategory,
+			Bestseller:  input.Bestseller,
+			Sizes:       input.Sizes,
 		}, images)
 
 		if err != nil {
@@ -96,14 +96,18 @@ func ListProducts(db *gorm.DB) gin.HandlerFunc {
 
 func RemoveProduct(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		idStr := c.Param("id") // assuming /products/:id
-		id, err := strconv.Atoi(idStr)
-		if err != nil || id <= 0 {
+		var requestBody struct {
+			ID int `json:"id" binding:"required"`
+		}
+
+		// Bind JSON from request body
+		if err := c.ShouldBindJSON(&requestBody); err != nil || requestBody.ID == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid product ID"})
 			return
 		}
 
-		err = services.DeleteProductByID(db, uint(id))
+		// Delete the product by ID (implement this service function)
+		err := services.DeleteProductByID(db, requestBody.ID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return

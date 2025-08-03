@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"sync"
+
 	"github.com/avalent1/snapshop/config"
 	"github.com/avalent1/snapshop/models"
 	"gorm.io/gorm"
@@ -8,6 +10,20 @@ import (
 
 type CartRepository struct {
 	DB *gorm.DB
+}
+
+type Image struct {
+	URL string `json:"url"`
+}
+
+type DetailedCartItem struct {
+	ID        int     `json:"_id"`
+	ProductID int     `json:"productId"`
+	Name      string  `json:"name"`
+	Images    []Image `json:"images"`
+	Price     float64 `json:"price"`
+	Size      string  `json:"size"`
+	Quantity  int     `json:"quantity"`
 }
 
 // Konstruktor
@@ -84,4 +100,66 @@ func DeleteCartItem(userID int, productID int, size string) error {
 	`, userID, productID, size)
 
 	return result.Error
+}
+
+func GetDetailedCartItems(userID int) ([]DetailedCartItem, error) {
+	cartItems, err := GetCartItemsByUser(config.DB, userID)
+	if err != nil {
+		return nil, err
+	}
+	if len(cartItems) == 0 {
+		return []DetailedCartItem{}, nil
+	}
+
+	detailedItems := make([]DetailedCartItem, len(cartItems))
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	errs := make(chan error, len(cartItems))
+
+	for i, item := range cartItems {
+		wg.Add(1)
+		go func(i int, item models.Cart) {
+			defer wg.Done()
+
+			var product models.Product
+			if err := config.DB.First(&product, item.ProductID).Error; err != nil {
+				errs <- err
+				return
+			}
+
+			var productImages []models.ProductImage
+			err := config.DB.Where("product_id = ?", item.ProductID).Find(&productImages).Error
+			if err != nil {
+				productImages = []models.ProductImage{}
+			}
+			images := make([]Image, len(productImages))
+			for idx, img := range productImages {
+				images[idx] = Image{URL: img.URL}
+
+			}
+
+			detail := DetailedCartItem{
+				ID:        item.ID,
+				ProductID: item.ProductID,
+				Name:      product.Name,
+				Images:    images,
+				Price:     float64(product.Price),
+				Size:      item.Size,
+				Quantity:  item.Quantity,
+			}
+
+			mu.Lock()
+			detailedItems[i] = detail
+			mu.Unlock()
+		}(i, item)
+	}
+
+	wg.Wait()
+	close(errs)
+
+	for err := range errs {
+		return nil, err
+	}
+
+	return detailedItems, nil
 }

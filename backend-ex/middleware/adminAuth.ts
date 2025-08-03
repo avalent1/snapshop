@@ -9,7 +9,6 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
     }
     const token_decode = jwt.verify(token, process.env.JWT_SECRET as string);
 
-    // This comparison should depend on how you encoded the token during sign
     if (typeof token_decode !== 'object' || token_decode.email !== process.env.ADMIN_EMAIL) {
       return res.json({ success: false, message: "Not Authorized, Login Again" });
     }

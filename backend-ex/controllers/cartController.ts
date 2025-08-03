@@ -46,11 +46,10 @@ const updateCart = async (req: Request, res: Response) => {
 
 const getUserCart = async (req: Request, res: Response) => {
   try {
-    console.log("req:", req)
     const userId = Number((req as Request & { userId: number }).userId);
 
     if (isNaN(userId)) {
-      return res.status(400).json({ error: 'Invalid userId parameter.' });
+      return res.status(400).json({ error: 'Invalid user ID parameter.' });
     }
 
     const cartItems = await getCartItemsByUser(userId);
@@ -58,7 +57,7 @@ const getUserCart = async (req: Request, res: Response) => {
     return res.json({ cartData: cartItems });
 
   } catch (error) {
-    console.error('Error in getUserCart:', error);
+    console.error('Error in getting user cart:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

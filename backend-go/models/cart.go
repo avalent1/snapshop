@@ -9,6 +9,10 @@ type Cart struct {
 	Price     float32 `gorm:"not null;column:price" json:"price"`
 }
 
+func (Cart) TableName() string {
+	return "cart_items"
+}
+
 type CartWithPrice struct {
 	ID        int
 	UserID    int

@@ -39,8 +39,6 @@ const BestSeller = () => {
           These are the pieces everyone's talking about. Shop our most-loved and top-selling items.
         </p>
       </div>
-
-      {/* Strelice */}
       <button
         onClick={() => scroll('left')}
         className='absolute left-0 top-[50%] transform -translate-y-1/2 bg-white rounded-full shadow-md z-10 p-2 hover:bg-gray-100'
@@ -54,8 +52,6 @@ const BestSeller = () => {
       >
         <ChevronRight size={24} />
       </button>
-
-      {/* Horizontalni scrollable container */}
       <div
         ref={scrollRef}
         className='flex overflow-x-auto gap-4 px-4 no-scrollbar scroll-smooth'

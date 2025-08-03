@@ -83,14 +83,15 @@ func GetUserCart(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID := c.GetInt("userId")
 		fmt.Println("user id je: ", userID)
-		cartItems, err := repositories.GetCartItemsByUser(db, userID)
+		detailedItems, err := repositories.GetDetailedCartItems(userID)
+		//cartItems, err := repositories.GetCartItemsByUser(db, userID)
 		if err != nil {
 			fmt.Printf("Error retrieving cart items: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"cartData": cartItems})
+		c.JSON(http.StatusOK, gin.H{"cartData": detailedItems})
 	}
 }
 

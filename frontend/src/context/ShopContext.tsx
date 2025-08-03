@@ -156,6 +156,7 @@ const ShopContextProvider = (props: React.PropsWithChildren) => {
 
             const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { Authorization: `Bearer ${token}` } })
             console.log(response)
+            console.log(token)
             setCartItems(response.data.cartData)
             console.log("tooo:", cartItems)
 

@@ -25,7 +25,6 @@ const addProduct = async (req: Request, res: Response) => {
     }
 
     const uploadedImages = [files.image1?.[0], files.image2?.[0], files.image3?.[0]].filter(Boolean);
-    // Ensure sizes is parsed as array (could be sent as JSON string)
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
 
     if (!parsedSizes || !Array.isArray(parsedSizes) || parsedSizes.length === 0) {

@@ -17,10 +17,8 @@ const Login = () => {
     try {
       if (currentState == 'Sign Up') {
 
-        const response = await axios.post(backendUrl + '/user/register', { name, email, password })
+        const response = await axios.post(backendUrl + '/api/user/register', { name, email, password })
         if (response.data.success) {
-          //setToken(response.data.token)
-          //localStorage.setItem('token', response.data.token)
           toast.info("You have successfully signed up, please login!")
           setCurrentState('Login')
         }
@@ -29,7 +27,7 @@ const Login = () => {
         }
       }
       else {
-        const response = await axios.post(backendUrl + '/user/login', { email, password })
+        const response = await axios.post(backendUrl + '/api/user/login', { email, password })
         if (response.data.success) {
           setToken(response.data.token)
           localStorage.setItem('token', response.data.token)

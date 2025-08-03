@@ -29,7 +29,7 @@ func main() {
 	// Inicijalizacija Cloudinary-a
 	_, err := utils.ConnectCloudinary()
 	if err != nil {
-		log.Fatal("❌ Failed to initialize Cloudinary:", err)
+		log.Fatal("Failed to initialize Cloudinary:", err)
 	}
 
 	// Inicijalizacija baze
@@ -65,9 +65,9 @@ func main() {
 	})
 
 	// Start server
-	log.Printf("🚀 Server running on port %s", port)
+	log.Printf("Server running on port %s", port)
 	if err := router.Run(":" + port); err != nil {
-		log.Fatal("❌ Failed to start server:", err)
+		log.Fatal("Failed to start server:", err)
 		fmt.Println("Failed to start server")
 	}
 }
